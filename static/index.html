@@ -74,10 +74,72 @@ body{background:radial-gradient(ellipse at 15% -10%,#1d3158,#0d1a2b 45%,#060b16)
 @keyframes brillo{50%{filter:drop-shadow(0 0 9px var(--accent))}}
 @media(prefers-reduced-motion:reduce){.ia-cab svg{animation:none}}
 .autor{margin:6px 0 0;color:var(--accent);font-size:.78rem;font-weight:700;letter-spacing:.08em}
+.lateral{position:fixed;left:0;top:0;bottom:0;width:244px;z-index:3;display:flex;flex-direction:column;gap:22px;padding:20px 14px;background:rgba(9,18,32,.82);backdrop-filter:blur(8px);border-right:1px solid #26405f}
+.marca{display:flex;align-items:center;gap:10px;padding:0 6px}
+.marca svg{width:38px;height:38px;flex:none}
+.marca b{display:block;font-weight:800;letter-spacing:-.01em}
+.marca small{color:var(--muted);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase}
+.lateral nav{display:grid;gap:6px}
+.nav{display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;border:1px solid transparent;border-radius:12px;background:none;color:var(--muted);font:inherit;font-weight:600;cursor:pointer;text-align:left;transition:.2s}
+.nav svg{width:20px;height:20px;flex:none}
+.nav:hover{background:rgba(124,196,255,.08);color:var(--text)}
+.nav.on{color:var(--text);background:rgba(124,196,255,.14);border-color:#2f5c8a;box-shadow:0 0 18px rgba(124,196,255,.18)}
+.nav.on svg{color:var(--accent)}
+.nav:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.lat-pie{margin-top:auto;padding:12px;border:1px solid #26405f;border-radius:14px;background:rgba(20,35,57,.7);font-size:.8rem}
+.lat-pie .fila{display:flex;align-items:center;gap:8px;font-weight:600}
+#lat-punto{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}
+.lat-pie small{display:block;margin-top:6px;color:var(--muted)}
+.wrap{margin:0 auto 0 244px;max-width:1260px;padding:24px 28px 48px}
+.vista{display:none}
+.vista.on{display:block}
+h3.seccion.primero{margin-top:8px}
+.vsub{margin:-4px 0 16px;color:var(--muted)}
+.ia-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.tarj{background:rgba(20,35,57,.72);border:1px solid #26405f;border-radius:16px;padding:16px 18px}
+.tarj h4{margin:0 0 10px;font-size:1rem;font-weight:800}
+.cap{display:inline-block;margin-right:8px;padding:2px 9px;border-radius:999px;background:rgba(124,196,255,.15);color:var(--accent);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase}
+.mut{margin:0 0 8px;color:var(--muted);font-size:.88rem}
+.reglas{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.reglas li{display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:center;padding:8px 10px;border-radius:10px;background:rgba(13,26,43,.6)}
+.reglas .rn{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+.reglas .rt small{display:block;color:var(--muted);font-size:.78rem}
+.reglas .re{font-size:.82rem;font-weight:600;color:var(--ok)}
+.reglas li.si .rn{background:var(--bad)}
+.reglas li.si .re{color:var(--bad)}
+.zfila{margin-bottom:12px}
+.zt{display:flex;justify-content:space-between;gap:8px;font-size:.88rem}
+.zt span,.zs{color:var(--muted);font-size:.8rem}
+.zbarra{position:relative;height:8px;margin:7px 0 4px;border-radius:99px;background:#1c3050}
+.zc{position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:#93a6be}
+.zp{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:2px solid #0d1a2b;transition:left .4s}
+.reco.ok{border-color:var(--ok)}
+.reco.warn{border-color:var(--warn)}
+.reco.bad{border-color:var(--bad)}
+.reco .rt{margin:0 0 4px;font-size:1.25rem;font-weight:800}
+.reco.ok .rt{color:var(--ok)}
+.reco.warn .rt{color:var(--warn)}
+.reco.bad .rt{color:var(--bad)}
+.reco ul{margin:6px 0 10px;padding-left:20px}
+.aviso-med{margin:0;color:var(--muted);font-size:.78rem}
+.hist{list-style:none;margin:0 0 8px;padding:0;display:grid;gap:6px}
+.hist li{display:grid;grid-template-columns:100px 80px 1fr;gap:10px;padding:9px 12px;border-radius:6px 12px 12px 6px;background:rgba(20,35,57,.72);border-left:4px solid var(--muted);font-size:.9rem}
+.hist li.alto{border-left-color:var(--bad)}
+.hist li.alto b{color:var(--bad)}
+.hist li.medio{border-left-color:var(--warn)}
+.hist li.medio b{color:var(--warn)}
+.hist li.info{display:block;color:var(--muted)}
+.hist .h{color:var(--muted)}
+@media(max-width:860px){.lateral{position:static;width:auto;flex-direction:row;flex-wrap:wrap;gap:10px;padding:12px 14px}.lateral nav{display:flex;flex-wrap:wrap}.nav{width:auto}.lat-pie{display:none}.wrap{margin:0;padding:16px}.ia-grid{grid-template-columns:1fr}.hist li{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <canvas id="estrellas"></canvas>
+<aside class="lateral">
+  <div class="marca"><svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="9" fill="#4fd1a5"/><ellipse cx="24" cy="24" rx="20" ry="8" stroke="#7cc4ff" stroke-width="2" transform="rotate(-25 24 24)"/><circle cx="41" cy="16" r="3" fill="#e9eff7"/></svg><div><b>AstroHealth AI</b><small>Salud espacial</small></div></div>
+  <nav><button class="nav on" data-ir="panel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Panel principal</button><button class="nav" data-ir="ia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3M12 8.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></svg>Análisis IA</button><button class="nav" data-ir="historial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Historial</button></nav>
+  <div class="lat-pie"><div class="fila"><span id="lat-punto"></span><span id="lat-txt">Conectando</span></div><small>NASA Space Apps 2026 · prototipo activo</small></div>
+</aside>
 <div class="wrap">
   <header class="top">
     <div>
@@ -87,6 +149,7 @@ body{background:radial-gradient(ellipse at 15% -10%,#1d3158,#0d1a2b 45%,#060b16)
     <div class="pills"><span class="pill ia-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3M12 8.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></svg> IA activa</span><span id="pill" class="pill espera"><span class="dot"></span><span id="pill-txt">Conectando</span></span></div>
   </header>
   <p id="aviso" class="aviso" hidden></p>
+  <div class="vista on" id="v-panel">
   <section class="hero" aria-live="polite">
     <div class="estado">
       <h2 id="estado-titulo" class="ok">Conectando</h2>
@@ -120,12 +183,26 @@ body{background:radial-gradient(ellipse at 15% -10%,#1d3158,#0d1a2b 45%,#060b16)
       <span class="rango">Rango normal: 95 % o más</span>
     </button>
   </section>
+  </div>
+<div class="vista" id="v-ia">
+  <h3 class="seccion primero">Análisis de la IA</h3>
+  <p class="vsub">Así decide la IA el estado del astronauta: revisa reglas clínicas y compara con su propia línea base.</p>
+  <div class="ia-grid">
+    <section class="tarj"><h4><span class="cap">Capa 1</span>Reglas clínicas</h4><ul id="ia-reglas" class="reglas"></ul></section>
+    <section class="tarj"><h4><span class="cap">Capa 2</span>Línea base personal</h4><p id="ia-base-n" class="mut"></p><div id="ia-base"></div></section>
+  </div>
+  <section id="ia-reco" class="tarj reco ok"><h4><span class="cap">Resultado</span>Recomendación de la IA</h4><p id="ia-reco-t" class="rt"></p><p id="ia-reco-d" class="mut"></p><ul id="ia-reco-l"></ul><p id="ia-reco-m" class="mut"></p><p class="aviso-med">Recomendación orientativa generada con reglas clínicas. No sustituye una evaluación médica.</p></section>
+</div>
+<div class="vista" id="v-historial">
+  <h3 class="seccion primero">Historial de alertas</h3>
+  <ul id="hist-alertas" class="hist"></ul>
   <h3 class="seccion">Últimas lecturas</h3>
   <div class="tabla-wrap">
     <table>
       <thead><tr><th>Hora</th><th>Pulso (lpm)</th><th>Temperatura (°C)</th><th>SpO2 (%)</th></tr></thead>
       <tbody id="tabla"></tbody>
     </table>
+  </div>
   </div>
   <footer>Prototipo del NASA Space Apps Challenge 2026. Las alertas combinan reglas clínicas simples con una comparación contra la línea base de cada astronauta. No sustituye una evaluación médica.<p class="autor">Desarrollador web: ALDAHIR PABLO SILVA VILLAR</p>
   </footer>
@@ -291,11 +368,11 @@ body{background:radial-gradient(ellipse at 15% -10%,#1d3158,#0d1a2b 45%,#060b16)
       b.querySelector('[data-tag]').textContent = ETQ[st];
     });
 
-    dibujarGrafico(filas); actualizarOrbe({normal:'#4fd1a5',atencion:'#f5b642',critico:'#ff6b5b'}[nivel],act.bpm,act.bpm); iaTexto(filas.length);
+    dibujarGrafico(filas); actualizarOrbe({normal:'#4fd1a5',atencion:'#f5b642',critico:'#ff6b5b'}[nivel],act.bpm,act.bpm); iaTexto(filas.length); vistas(filas,nivel);
 
     var tb = $('#tabla');
     tb.innerHTML = '';
-    filas.slice(-8).reverse().forEach(function (f) {
+    filas.slice(-20).reverse().forEach(function (f) {
       var tr = document.createElement('tr');
       [
         [new Date(f.created_at).toLocaleTimeString('es-PE'), ''],
@@ -369,7 +446,81 @@ body{background:radial-gradient(ellipse at 15% -10%,#1d3158,#0d1a2b 45%,#060b16)
     orbe={set:function(hex,b){bpm=b||60;[core,halo,shell].forEach(function(o){o.material.color.set(hex);});if(red)frame(performance.now());}};
     requestAnimationFrame(frame);
   }
-  //__NUEVO__
+  function ir(v){
+  document.querySelectorAll('.vista').forEach(function(x){x.classList.toggle('on',x.id==='v-'+v);});
+  document.querySelectorAll('.nav').forEach(function(b){b.classList.toggle('on',b.dataset.ir===v);});
+  try{history.replaceState(null,'','#'+v);}catch(e){}
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.nav').forEach(function(b){b.addEventListener('click',function(){ir(b.dataset.ir);});});
+var hash0=(location.hash||'').slice(1);
+if(['ia','historial'].indexOf(hash0)>=0)ir(hash0);
+function vistas(filas,nivel){
+  var act=filas[filas.length-1];
+  var col={normal:'#4fd1a5',atencion:'#f5b642',critico:'#ff6b5b'}[nivel];
+  var txt={normal:'Todo en rango',atencion:'Requiere atención',critico:'Estado crítico'}[nivel];
+  $('#lat-punto').style.background=col;
+  $('#lat-txt').style.color=col;
+  $('#lat-txt').textContent=txt+' · '+act.bpm+' lpm';
+  reglasIA(act);baseIA(filas);recoIA(nivel,act);histIA(filas);
+}
+function recoIA(nivel,a){
+  var T={
+    normal:['Mantén la rutina','Todos los signos están dentro de la línea base del astronauta.',['Seguir con la actividad programada','Mantener hidratación y descanso según el plan']],
+    atencion:['Reduce el esfuerzo y vigila','Hay valores fuera del rango normal que conviene controlar.',['Pausar la actividad física unos 5 minutos','Avisar al control de misión si continúa']],
+    critico:['Actúa ahora','Hay una alerta de nivel alto en los signos vitales.',['Verificar el traje y el control térmico','Avisar al control de misión de inmediato']]
+  };
+  var t=T[nivel],c={normal:'ok',atencion:'warn',critico:'bad'}[nivel],al=alertasReglas(a);
+  $('#ia-reco').className='tarj reco '+c;
+  $('#ia-reco-t').textContent=t[0];
+  $('#ia-reco-d').textContent=t[1];
+  $('#ia-reco-m').textContent=al.length?'Motivo: '+al.map(function(x){return x.msg;}).join(' · '):'';
+  var ul=$('#ia-reco-l');ul.innerHTML='';
+  t[2].forEach(function(x){var li=document.createElement('li');li.textContent=x;ul.appendChild(li);});
+}
+function histIA(filas){
+  var ul=$('#hist-alertas'),n=0,li;ul.innerHTML='';
+  filas.slice().reverse().forEach(function(f){
+    var al=alertasReglas(f);if(!al.length||n>=15)return;n++;
+    var alto=al.some(function(x){return x.nivel==='alto';});
+    li=document.createElement('li');li.className=alto?'alto':'medio';
+    li.innerHTML='<span class="h"></span><b></b><span class="m"></span>';
+    li.querySelector('.h').textContent=new Date(f.created_at).toLocaleTimeString('es-PE');
+    li.querySelector('b').textContent=alto?'Crítico':'Atención';
+    li.querySelector('.m').textContent=al.map(function(x){return x.msg;}).join(' · ');
+    ul.appendChild(li);
+  });
+  if(!n){li=document.createElement('li');li.className='info';li.textContent='Sin alertas en las últimas lecturas.';ul.appendChild(li);}
+}
+var REGLAS=[['Fiebre','≥ 38 °C',function(l){return l.temp_c>=38;}],['Hipotermia','< 35 °C',function(l){return l.temp_c<35;}],['Taquicardia','> 100 lpm',function(l){return l.bpm>100;}],['Bradicardia','< 60 lpm',function(l){return l.bpm<60;}],['SpO2 baja','< 95 %',function(l){return l.spo2<95;}],['Hipoxia severa','< 90 %',function(l){return l.spo2<90;}]];
+function reglasIA(a){
+  var ul=$('#ia-reglas');ul.innerHTML='';
+  REGLAS.forEach(function(r){
+    var on=r[2](a),li=document.createElement('li');li.className=on?'si':'no';
+    li.innerHTML='<span class="rn"></span><span class="rt"><b></b><small></small></span><span class="re"></span>';
+    li.querySelector('b').textContent=r[0];li.querySelector('small').textContent=r[1];
+    li.querySelector('.re').textContent=on?'Alerta':'Normal';ul.appendChild(li);
+  });
+}
+function baseIA(filas){
+  var box=$('#ia-base'),hist=filas.slice(0,-1),act=filas[filas.length-1];box.innerHTML='';
+  $('#ia-base-n').textContent=hist.length>=10?'Línea base lista con '+hist.length+' lecturas.':'Aprendiendo la línea base: '+hist.length+' de 10 lecturas.';
+  [['bpm','Pulso','lpm',0],['temp_c','Temperatura','°C',1],['spo2','SpO2','%',1]].forEach(function(m){
+    var v=hist.map(function(f){return f[m[0]];}),n=v.length;
+    var mu=n?v.reduce(function(a,b){return a+b;},0)/n:0;
+    var sd=n?Math.sqrt(v.reduce(function(a,b){return a+(b-mu)*(b-mu);},0)/n):0;
+    var z=sd>0?(act[m[0]]-mu)/sd:0,ok=n>=10,at=ok&&Math.abs(z)>=2.5;
+    var d=document.createElement('div');d.className='zfila';
+    d.innerHTML='<div class="zt"><b></b><span></span></div><div class="zbarra"><i class="zc"></i><i class="zp"></i></div><div class="zs"></div>';
+    d.querySelector('b').textContent=m[1];
+    d.querySelector('span').textContent=ok?'Promedio '+mu.toFixed(m[3])+' '+m[2]+' · desv. '+sd.toFixed(2):'Sin base todavía';
+    d.querySelector('.zp').style.left=Math.max(0,Math.min(100,50+z*(50/3)))+'%';
+    d.querySelector('.zp').style.background=at?'#ff6b5b':'#4fd1a5';
+    d.querySelector('.zs').textContent=ok?'z = '+z.toFixed(1)+(at?' · atípico':' · típico'):'Necesita 10 lecturas';
+    box.appendChild(d);
+  });
+}
+//__NUEVO__
   iniciarEstrellas();
   crearOrbe();
   crearGrafico();
