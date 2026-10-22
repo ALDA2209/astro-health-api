@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monitor de salud del astronauta</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root { --bg:#0d1a2b; --panel:#142339; --panel-2:#1a2c46; --line:#26405f; --text:#e9eff7; --muted:#93a6be; --ok:#4fd1a5; --warn:#f5b642; --bad:#ff6b5b; --accent:#7cc4ff; }
+  * { box-sizing: border-box; }
+  html { color-scheme: dark; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:"Manrope",system-ui,sans-serif; line-height:1.5; font-variant-numeric:tabular-nums; }
+  .wrap { max-width:1180px; margin:0 auto; padding:24px 16px 48px; }
+  header.top { display:flex; flex-wrap:wrap; gap:12px 24px; align-items:center; justify-content:space-between; padding-bottom:20px; border-bottom:1px solid var(--line); }
+  header.top h1 { margin:0; font-size:1.25rem; font-weight:800; }
+  header.top p { margin:2px 0 0; color:var(--muted); font-size:.9rem; }
+  .pill { display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:999px; background:var(--panel); border:1px solid var(--line); font-size:.875rem; font-weight:600; }
+  .pill .dot { width:8px; height:8px; border-radius:50%; background:var(--muted); }
+  .pill.vivo .dot { background:var(--ok); }
+  .pill.demo .dot { background:var(--warn); }
+  .pill.espera .dot { background:var(--accent); }
+  .aviso { margin:16px 0 0; padding:10px 14px; background:#2a2415; border-left:3px solid var(--warn); border-radius:2px 8px 8px 2px; color:#f3dfae; font-size:.9rem; }
+  .aviso[hidden] { display:none; }
+  .hero { display:grid; grid-template-columns:minmax(260px,1fr) 2fr; gap:32px; margin-top:28px; align-items:start; }
+  .estado h2 { margin:0; font-size:clamp(2rem,4.2vw,3.1rem); line-height:1.05; font-weight:800; letter-spacing:-.02em; }
+  .estado h2.ok { color:var(--ok); } .estado h2.warn { color:var(--warn); } .estado h2.bad { color:var(--bad); }
+  .estado .sub { margin:10px 0 0; color:var(--muted); }
+  .alertas { list-style:none; padding:0; margin:22px 0 0; display:grid; gap:8px; }
+  .alertas li { padding:10px 12px; background:var(--panel); border-radius:6px 14px 14px 6px; border-left:4px solid var(--muted); font-size:.95rem; }
+  .alertas li.alto { border-left-color:var(--bad); } .alertas li.medio { border-left-color:var(--warn); } .alertas li.info { border-left-color:var(--ok); color:var(--muted); }
+  .grafico-panel { background:var(--panel); border:1px solid var(--line); border-radius:18px 18px 18px 4px; padding:18px 18px 10px; }
+  .grafico-panel h3 { margin:0 0 2px; font-size:1rem; font-weight:600; }
+  .grafico-panel .hint { margin:0 0 12px; color:var(--muted); font-size:.85rem; }
+  .chartbox { position:relative; height:300px; }
+  h3.seccion { margin:36px 0 12px; font-size:1rem; font-weight:600; }
+  .vitales { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .vital { text-align:left; font:inherit; color:inherit; cursor:pointer; background:var(--panel); border:1px solid var(--line); border-left-width:5px; border-radius:4px 16px 16px 4px; padding:16px 18px; display:grid; gap:4px; }
+  .vital:hover { background:var(--panel-2); }
+  .vital:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .vital[aria-pressed="true"] { background:var(--panel-2); border-color:var(--accent); }
+  .vital .nombre { font-weight:600; }
+  .vital .valor { font-size:2.6rem; font-weight:800; letter-spacing:-.03em; line-height:1.1; }
+  .vital .valor small { font-size:1rem; font-weight:600; color:var(--muted); margin-left:6px; letter-spacing:0; }
+  .vital .rango { color:var(--muted); font-size:.85rem; }
+  .vital.ok { border-left-color:var(--ok); } .vital.warn { border-left-color:var(--warn); } .vital.bad { border-left-color:var(--bad); }
+  .vital .tag { font-size:.85rem; font-weight:600; }
+  .vital.ok .tag { color:var(--ok); } .vital.warn .tag { color:var(--warn); } .vital.bad .tag { color:var(--bad); }
+  table { width:100%; border-collapse:collapse; background:var(--panel); border-radius:12px; overflow:hidden; }
+  th, td { padding:10px 14px; text-align:left; font-size:.92rem; }
+  th { color:var(--muted); font-weight:600; border-bottom:1px solid var(--line); }
+  tbody tr + tr td { border-top:1px solid #1c3050; }
+  td.bad { color:var(--bad); font-weight:600; } td.warn { color:var(--warn); font-weight:600; }
+  .tabla-wrap { overflow-x:auto; }
+  footer { margin-top:36px; color:var(--muted); font-size:.85rem; max-width:70ch; }
+  @media (max-width:860px) { .hero { grid-template-columns:1fr; gap:22px; } .vitales { grid-template-columns:1fr; } .chartbox { height:240px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Monitor de salud del astronauta</h1>
+      <p id="dispositivo">Dispositivo astro-01</p>
+    </div>
+    <span id="pill" class="pill espera"><span class="dot"></span><span id="pill-txt">Conectando</span></span>
+  </header>
+  <p id="aviso" class="aviso" hidden></p>
+  <section class="hero" aria-live="polite">
+    <div class="estado">
+      <h2 id="estado-titulo" class="ok">Conectando</h2>
+      <p id="estado-sub" class="sub">Buscando la última lectura.</p>
+      <ul id="alertas" class="alertas"></ul>
+    </div>
+    <div class="grafico-panel">
+      <h3 id="grafico-titulo">Pulso</h3>
+      <p class="hint">Últimas 60 lecturas. Las líneas punteadas marcan el rango normal.</p>
+      <div class="chartbox"><canvas id="grafico" aria-label="Gráfico del signo vital elegido" role="img"></canvas></div>
+    </div>
+  </section>
+  <h3 class="seccion">Signos vitales actuales. Elige uno para verlo en el gráfico.</h3>
+  <section class="vitales" id="vitales">
+    <button class="vital ok" data-m="bpm" aria-pressed="true">
+      <span class="nombre">Pulso</span>
+      <span class="valor"><span data-v>--</span><small>lpm</small></span>
+      <span class="tag" data-tag>Sin datos</span>
+      <span class="rango">Rango normal: 60 a 100 lpm</span>
+    </button>
+    <button class="vital ok" data-m="temp_c" aria-pressed="false">
+      <span class="nombre">Temperatura corporal</span>
+      <span class="valor"><span data-v>--</span><small>°C</small></span>
+      <span class="tag" data-tag>Sin datos</span>
+      <span class="rango">Rango normal: 35 a 38 °C</span>
+    </button>
+    <button class="vital ok" data-m="spo2" aria-pressed="false">
+      <span class="nombre">Saturación de oxígeno</span>
+      <span class="valor"><span data-v>--</span><small>%</small></span>
+      <span class="tag" data-tag>Sin datos</span>
+      <span class="rango">Rango normal: 95 % o más</span>
+    </button>
+  </section>
+  <h3 class="seccion">Últimas lecturas</h3>
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th>Hora</th><th>Pulso (lpm)</th><th>Temperatura (°C)</th><th>SpO2 (%)</th></tr></thead>
+      <tbody id="tabla"></tbody>
+    </table>
+  </div>
+  <footer>Prototipo del NASA Space Apps Challenge 2026. Las alertas combinan reglas clínicas simples con una comparación contra la línea base de cada astronauta. No sustituye una evaluación médica.</footer>
+</div>
+<script>
+(function () {
+  var qs = new URLSearchParams(location.search);
+  var deviceId = qs.get('device') || 'astro-01';
+  var forceDemo = qs.get('demo') === '1';
+  var POLL_MS = 3000;
+  var COL = { ok:'#4fd1a5', warn:'#f5b642', bad:'#ff6b5b' };
+  var ETQ = { ok:'En rango', warn:'Atención', bad:'Fuera de rango' };
+  var METRICAS = {
+    bpm:    { label:'Pulso', unit:'lpm', dec:0, limites:[60,100] },
+    temp_c: { label:'Temperatura corporal', unit:'°C', dec:1, limites:[35,38] },
+    spo2:   { label:'Saturación de oxígeno', unit:'%', dec:1, limites:[95] }
+  };
+  var metrica = 'bpm', grafico = null, modo = 'espera';
+  function $(s) { return document.querySelector(s); }
+
+  function estadoDe(m, v) {
+    if (m === 'temp_c') return (v >= 38 || v < 35) ? 'bad' : 'ok';
+    if (m === 'bpm') return (v > 100 || v < 60) ? 'warn' : 'ok';
+    return v < 90 ? 'bad' : (v < 95 ? 'warn' : 'ok');
+  }
+
+  var demoFilas = [], demoT = 0;
+  function puntoDemo(ts) {
+    demoT++;
+    var bump = (demoT % 50) >= 40 ? 36 : 0;
+    function ruido(a) { return (Math.random() - 0.5) * a; }
+    return {
+      device_id: deviceId, created_at: new Date(ts).toISOString(),
+      temp_c: +(36.6 + 0.18 * Math.sin(demoT / 9) + ruido(0.1)).toFixed(1),
+      bpm: Math.round(76 + 8 * Math.sin(demoT / 5) + ruido(4) + bump),
+      spo2: +(97.4 + 0.6 * Math.sin(demoT / 11) + ruido(0.4)).toFixed(1)
+    };
+  }
+  function avanzarDemo() {
+    if (!demoFilas.length) {
+      var ahora = Date.now();
+      for (var i = 59; i >= 0; i--) demoFilas.push(puntoDemo(ahora - i * POLL_MS));
+    } else {
+      demoFilas.push(puntoDemo(Date.now()));
+      if (demoFilas.length > 60) demoFilas.shift();
+    }
+    return demoFilas.slice();
+  }
+  function alertasReglas(l) {
+    var a = [];
+    if (l.temp_c >= 38) a.push({ nivel:'alto', msg:'Fiebre (' + l.temp_c.toFixed(1) + ' °C)' });
+    else if (l.temp_c < 35) a.push({ nivel:'alto', msg:'Hipotermia (' + l.temp_c.toFixed(1) + ' °C)' });
+    if (l.bpm > 100) a.push({ nivel:'medio', msg:'Taquicardia (' + l.bpm + ' BPM)' });
+    else if (l.bpm < 60) a.push({ nivel:'medio', msg:'Bradicardia (' + l.bpm + ' BPM)' });
+    if (l.spo2 < 90) a.push({ nivel:'alto', msg:'Hipoxia severa (SpO2 ' + l.spo2.toFixed(1) + ' %)' });
+    else if (l.spo2 < 95) a.push({ nivel:'medio', msg:'SpO2 baja (' + l.spo2.toFixed(1) + ' %)' });
+    return a;
+  }
+  function estadoDemo(filas) {
+    var act = filas[filas.length - 1], alertas = alertasReglas(act), nivel = 'normal';
+    if (alertas.some(function (x) { return x.nivel === 'alto'; })) nivel = 'critico';
+    else if (alertas.length) nivel = 'atencion';
+    return { nivel:nivel, alertas:alertas, anomalias:[] };
+  }
+
+  async function cargarVivo() {
+    var r = await fetch('/api/lecturas?device_id=' + encodeURIComponent(deviceId) + '&limit=60');
+    if (!r.ok) throw new Error('lecturas ' + r.status);
+    var filas = (await r.json()).reverse(), estado = null;
+    if (filas.length) {
+      var e = await fetch('/api/estado/' + encodeURIComponent(deviceId));
+      if (e.ok) estado = await e.json();
+    }
+    return { filas:filas, estado:estado };
+  }
+
+  function crearGrafico() {
+    if (!window.Chart) return;
+    grafico = new Chart($('#grafico'), {
+      type:'line', data:{ labels:[], datasets:[] },
+      options:{
+        responsive:true, maintainAspectRatio:false, animation:false,
+        interaction:{ intersect:false, mode:'index' },
+        plugins:{ legend:{ display:false } },
+        scales:{
+          x:{ ticks:{ color:'#93a6be', maxTicksLimit:6 }, grid:{ display:false } },
+          y:{ ticks:{ color:'#93a6be' }, grid:{ color:'#1e3250' } }
+        }
+      }
+    });
+  }
+
+  function dibujarGrafico(filas) {
+    var cfg = METRICAS[metrica];
+    $('#grafico-titulo').textContent = cfg.label + ' (' + cfg.unit + ')';
+    if (!grafico) return;
+    var vals = filas.map(function (f) { return f[metrica]; });
+    var ult = vals[vals.length - 1];
+    var color = COL[ult === undefined ? 'ok' : estadoDe(metrica, ult)];
+    var ds = [{ data:vals, borderColor:color, backgroundColor:color + '22', fill:true, tension:0.35, pointRadius:0, borderWidth:2.5 }];
+    cfg.limites.forEach(function (l) {
+      ds.push({ data:vals.map(function () { return l; }), borderColor:'#93a6be', borderDash:[5,5], borderWidth:1, pointRadius:0, fill:false });
+    });
+    grafico.data.labels = filas.map(function (f) {
+      return new Date(f.created_at).toLocaleTimeString('es-PE', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+    });
+    grafico.data.datasets = ds;
+    grafico.update();
+  }
+
+  function haceCuanto(iso) {
+    var s = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 1000));
+    return s < 60 ? 'hace ' + s + ' s' : 'hace ' + Math.round(s / 60) + ' min';
+  }
+
+  function render(filas, estado) {
+    $('#pill').className = 'pill ' + modo;
+    $('#pill-txt').textContent = modo === 'vivo' ? 'En vivo' : (modo === 'demo' ? 'Datos de ejemplo' : 'Esperando datos');
+    var aviso = $('#aviso');
+    if (modo === 'demo') {
+      aviso.hidden = false;
+      aviso.textContent = forceDemo ? 'Modo demo activado con ?demo=1. Los valores son simulados.' : 'No hay conexión con la API, por eso se muestran datos de ejemplo.';
+    } else { aviso.hidden = true; }
+    $('#dispositivo').textContent = 'Dispositivo ' + deviceId;
+
+    var tit = $('#estado-titulo'), sub = $('#estado-sub'), ul = $('#alertas');
+    ul.innerHTML = '';
+    if (!filas.length) {
+      tit.className = ''; tit.textContent = 'Esperando datos';
+      sub.textContent = 'Todavía no llegan lecturas de ' + deviceId + '. Inicia la simulación en Wokwi y aparecerán aquí.';
+      document.querySelectorAll('.vital').forEach(function (b) {
+        b.querySelector('[data-v]').textContent = '--';
+        b.querySelector('[data-tag]').textContent = 'Sin datos';
+        b.className = 'vital ok';
+      });
+      $('#tabla').innerHTML = '';
+      dibujarGrafico([]);
+      return;
+    }
+
+    var act = filas[filas.length - 1];
+    var nivel = estado ? estado.nivel : estadoDemo(filas).nivel;
+    var titulos = { normal:['Todo en rango','ok'], atencion:['Requiere atención','warn'], critico:['Estado crítico','bad'] };
+    tit.className = titulos[nivel][1];
+    tit.textContent = titulos[nivel][0];
+    sub.textContent = 'Última lectura ' + haceCuanto(act.created_at) + '.';
+
+    var items = [];
+    if (estado) {
+      (estado.alertas || []).forEach(function (a) { items.push({ nivel:a.nivel, msg:a.msg }); });
+      (estado.anomalias || []).forEach(function (a) { items.push({ nivel:'medio', msg:a.msg }); });
+    }
+    if (!items.length) items.push({ nivel:'info', msg:'Sin alertas. Los valores están dentro del rango normal y de la línea base del astronauta.' });
+    items.forEach(function (it) {
+      var li = document.createElement('li');
+      li.className = it.nivel; li.textContent = it.msg; ul.appendChild(li);
+    });
+
+    document.querySelectorAll('.vital').forEach(function (b) {
+      var m = b.dataset.m, cfg = METRICAS[m], v = act[m], st = estadoDe(m, v);
+      b.className = 'vital ' + st;
+      b.querySelector('[data-v]').textContent = Number(v).toFixed(cfg.dec);
+      b.querySelector('[data-tag]').textContent = ETQ[st];
+    });
+
+    dibujarGrafico(filas);
+
+    var tb = $('#tabla');
+    tb.innerHTML = '';
+    filas.slice(-8).reverse().forEach(function (f) {
+      var tr = document.createElement('tr');
+      [
+        [new Date(f.created_at).toLocaleTimeString('es-PE'), ''],
+        [f.bpm, estadoDe('bpm', f.bpm)],
+        [Number(f.temp_c).toFixed(1), estadoDe('temp_c', f.temp_c)],
+        [Number(f.spo2).toFixed(1), estadoDe('spo2', f.spo2)]
+      ].forEach(function (c) {
+        var td = document.createElement('td');
+        td.textContent = c[0];
+        if (c[1] === 'warn' || c[1] === 'bad') td.className = c[1];
+        tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    });
+  }
+
+  async function tick() {
+    try {
+      if (forceDemo) throw new Error('demo');
+      var d = await cargarVivo();
+      modo = d.filas.length ? 'vivo' : 'espera';
+      render(d.filas, d.estado);
+    } catch (e) {
+      modo = 'demo';
+      var filas = avanzarDemo();
+      render(filas, estadoDemo(filas));
+    }
+  }
+
+  document.querySelectorAll('.vital').forEach(function (b) {
+    b.addEventListener('click', function () {
+      metrica = b.dataset.m;
+      document.querySelectorAll('.vital').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      tick();
+    });
+  });
+
+  crearGrafico();
+  tick();
+  setInterval(tick, POLL_MS);
+})();
+</script>
+</body>
+</html>
