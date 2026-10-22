@@ -6,6 +6,7 @@
 <title>Monitor de salud del astronauta</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
   :root { --bg:#0d1a2b; --panel:#142339; --panel-2:#1a2c46; --line:#26405f; --text:#e9eff7; --muted:#93a6be; --ok:#4fd1a5; --warn:#f5b642; --bad:#ff6b5b; --accent:#7cc4ff; }
   * { box-sizing: border-box; }
@@ -54,23 +55,42 @@
   .tabla-wrap { overflow-x:auto; }
   footer { margin-top:36px; color:var(--muted); font-size:.85rem; max-width:70ch; }
   @media (max-width:860px) { .hero { grid-template-columns:1fr; gap:22px; } .vitales { grid-template-columns:1fr; } .chartbox { height:240px; } }
+body{background:radial-gradient(ellipse at 15% -10%,#1d3158,#0d1a2b 45%,#060b16) fixed}
+#estrellas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1}
+.pills{display:flex;flex-wrap:wrap;gap:10px}
+.pill,.vital,.grafico-panel{background:rgba(20,35,57,.72)}
+.ia-pill{color:var(--accent);border-color:#2f5c8a}
+.ia-pill svg{width:16px;height:16px}
+.orbe-card,.ia{margin-top:20px;padding:12px;text-align:center;background:rgba(20,35,57,.72);border:1px solid #2f5c8a;border-radius:18px 18px 18px 4px}
+#orbe{width:100%;height:220px;display:block}
+.orbe-lect{font-size:1.7rem;font-weight:800}
+.ia{text-align:left;border-radius:6px 16px 16px 16px}
+.ia-cab{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.ia-cab svg{width:34px;height:34px;flex:none;color:var(--accent);animation:brillo 2.4s ease-in-out infinite}
+.ia-cab h3{margin:0;font-size:1rem}
+.ia-cab p{margin:0;color:var(--muted);font-size:.8rem}
+.ia .alertas{margin:0}
+@keyframes brillo{50%{filter:drop-shadow(0 0 9px var(--accent))}}
+@media(prefers-reduced-motion:reduce){.ia-cab svg{animation:none}}
 </style>
 </head>
 <body>
+<canvas id="estrellas"></canvas>
 <div class="wrap">
   <header class="top">
     <div>
       <h1>Monitor de salud del astronauta</h1>
       <p id="dispositivo">Dispositivo astro-01</p>
     </div>
-    <span id="pill" class="pill espera"><span class="dot"></span><span id="pill-txt">Conectando</span></span>
+    <div class="pills"><span class="pill ia-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3M12 8.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></svg> IA activa</span><span id="pill" class="pill espera"><span class="dot"></span><span id="pill-txt">Conectando</span></span></div>
   </header>
   <p id="aviso" class="aviso" hidden></p>
   <section class="hero" aria-live="polite">
     <div class="estado">
       <h2 id="estado-titulo" class="ok">Conectando</h2>
       <p id="estado-sub" class="sub">Buscando la última lectura.</p>
-      <ul id="alertas" class="alertas"></ul>
+      <div class="orbe-card"><canvas id="orbe"></canvas><div class="orbe-lect"><span id="orbe-bpm">--</span> lpm</div></div><div class="ia"><div class="ia-cab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3M12 8.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></svg><div><h3>Asistente de IA</h3><p id="ia-estado">Esperando lecturas.</p></div></div><ul id="alertas" class="alertas"></ul></div>
     </div>
     <div class="grafico-panel">
       <h3 id="grafico-titulo">Pulso</h3>
@@ -183,7 +203,7 @@
   function crearGrafico() {
     if (!window.Chart) return;
     grafico = new Chart($('#grafico'), {
-      type:'line', data:{ labels:[], datasets:[] },
+      type:'line', plugins:[glow], data:{ labels:[], datasets:[] },
       options:{
         responsive:true, maintainAspectRatio:false, animation:false,
         interaction:{ intersect:false, mode:'index' },
@@ -203,7 +223,7 @@
     var vals = filas.map(function (f) { return f[metrica]; });
     var ult = vals[vals.length - 1];
     var color = COL[ult === undefined ? 'ok' : estadoDe(metrica, ult)];
-    var ds = [{ data:vals, borderColor:color, backgroundColor:color + '22', fill:true, tension:0.35, pointRadius:0, borderWidth:2.5 }];
+    var ds = [{ data:vals, borderColor:color, backgroundColor:function(c){var a=c.chart.chartArea;if(!a)return color+'22';var g=c.chart.ctx.createLinearGradient(0,a.top,0,a.bottom);g.addColorStop(0,color+'77');g.addColorStop(1,color+'00');return g;}, fill:true, tension:0.35, pointRadius:0, borderWidth:2.5 }];
     cfg.limites.forEach(function (l) {
       ds.push({ data:vals.map(function () { return l; }), borderColor:'#93a6be', borderDash:[5,5], borderWidth:1, pointRadius:0, fill:false });
     });
@@ -240,7 +260,7 @@
         b.className = 'vital ok';
       });
       $('#tabla').innerHTML = '';
-      dibujarGrafico([]);
+      dibujarGrafico([]); actualizarOrbe('#7cc4ff',60,'--'); iaTexto(0);
       return;
     }
 
@@ -269,7 +289,7 @@
       b.querySelector('[data-tag]').textContent = ETQ[st];
     });
 
-    dibujarGrafico(filas);
+    dibujarGrafico(filas); actualizarOrbe({normal:'#4fd1a5',atencion:'#f5b642',critico:'#ff6b5b'}[nivel],act.bpm,act.bpm); iaTexto(filas.length);
 
     var tb = $('#tabla');
     tb.innerHTML = '';
@@ -311,6 +331,45 @@
     });
   });
 
+  var orbe=null;
+  var glow={id:'glow',beforeDatasetDraw:function(c,a){if(a.index===0){c.ctx.save();c.ctx.shadowColor=c.data.datasets[0].borderColor;c.ctx.shadowBlur=14;}},afterDatasetDraw:function(c,a){if(a.index===0)c.ctx.restore();}};
+  function iaTexto(n){$('#ia-estado').textContent=n?'Analizando '+n+' lecturas: reglas clínicas y detección de anomalías.':'Esperando lecturas para analizar.';}
+  function actualizarOrbe(hex,bpm,txt){$('#orbe-bpm').textContent=txt;if(orbe)orbe.set(hex,bpm);}
+  function iniciarEstrellas(){
+    var cv=$('#estrellas'),x=cv.getContext('2d'),st=[],red=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function tam(){cv.width=innerWidth;cv.height=innerHeight;st=[];for(var i=0;i<cv.width*cv.height/9000;i++)st.push({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.3+.2,f:Math.random()*6.28,v:Math.random()*.02+.005});}
+    function pinta(){x.clearRect(0,0,cv.width,cv.height);x.fillStyle='#cfe3ff';st.forEach(function(e){if(!red)e.f+=e.v;x.globalAlpha=.35+.45*Math.sin(e.f);x.beginPath();x.arc(e.x,e.y,e.r,0,6.283);x.fill();});if(!red)requestAnimationFrame(pinta);}
+    tam();pinta();addEventListener('resize',function(){tam();if(red)pinta();});
+  }
+  function crearOrbe(){
+    var tarj=$('.orbe-card'),cv=$('#orbe'),R;
+    if(!window.THREE){tarj.style.display='none';return;}
+    try{R=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});}catch(e){tarj.style.display='none';return;}
+    R.setPixelRatio(Math.min(devicePixelRatio||1,2));
+    var sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(45,1,.1,100),g=new THREE.Group();cam.position.z=6.2;
+    function mat(c,o,w){return new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:o,wireframe:!!w});}
+    var core=new THREE.Mesh(new THREE.SphereGeometry(.8,32,32),mat(0x4fd1a5,.9));
+    var halo=new THREE.Mesh(new THREE.SphereGeometry(1.05,32,32),mat(0x4fd1a5,.18));
+    var shell=new THREE.Mesh(new THREE.IcosahedronGeometry(1.6,1),mat(0x4fd1a5,.5,true));
+    var ring=new THREE.Mesh(new THREE.TorusGeometry(2.3,.018,8,160),mat(0x7cc4ff,.7));ring.rotation.x=1.15;
+    var sats=[0,1,2].map(function(){var m=new THREE.Mesh(new THREE.SphereGeometry(.11,12,12),mat(0xe9eff7,1));ring.add(m);return m;});
+    g.add(core,halo,shell,ring);sc.add(g);
+    function ajusta(){var w=cv.clientWidth||300,h=cv.clientHeight||220;R.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();}
+    ajusta();addEventListener('resize',ajusta);
+    var red=matchMedia('(prefers-reduced-motion: reduce)').matches,bpm=70,t0=performance.now();
+    function frame(now){
+      var t=(now-t0)/1000,e=1+.16*Math.pow(Math.max(0,Math.sin(6.283*bpm/60*t)),4);
+      core.scale.set(e,e,e);halo.scale.set(e*1.12,e*1.12,e*1.12);
+      if(!red){shell.rotation.y=t*.25;shell.rotation.x=t*.12;g.rotation.y=Math.sin(t*.2)*.35;
+        sats.forEach(function(m,i){var a=t*.6+i*2.094;m.position.set(Math.cos(a)*2.3,Math.sin(a)*2.3,0);});}
+      R.render(sc,cam);if(!red)requestAnimationFrame(frame);
+    }
+    orbe={set:function(hex,b){bpm=b||60;[core,halo,shell].forEach(function(o){o.material.color.set(hex);});if(red)frame(performance.now());}};
+    requestAnimationFrame(frame);
+  }
+  //__NUEVO__
+  iniciarEstrellas();
+  crearOrbe();
   crearGrafico();
   tick();
   setInterval(tick, POLL_MS);
