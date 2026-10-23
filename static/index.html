@@ -133,13 +133,44 @@ h3.seccion.primero{margin-top:8px}
 @media(max-width:860px){.lateral{position:static;width:auto;flex-direction:row;flex-wrap:wrap;gap:10px;padding:12px 14px}.lateral nav{display:flex;flex-wrap:wrap}.nav{width:auto}.lat-pie{display:none}.wrap{margin:0;padding:16px}.ia-grid{grid-template-columns:1fr}.hist li{grid-template-columns:1fr}}
 .wrap{margin:0 0 0 max(244px,calc(50vw - 538px));max-width:1320px;padding:28px 32px 48px}
 @media(max-width:860px){.wrap{margin:0;padding:16px}}
+
+.sim-top h2{margin:0 0 4px;font-size:22px}
+.sim-top p{margin:0 0 14px;color:#93a6be;font-size:13px}
+.sim-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(290px,1fr);gap:14px}
+.sim-esc{position:relative;border-radius:16px;overflow:hidden;border:1px solid rgba(124,196,255,.18);background:#050d1a}
+.sim-esc canvas{width:100%;height:470px;display:block;cursor:grab;touch-action:none}
+.sim-hud{position:absolute;left:12px;top:12px;display:flex;gap:8px;flex-wrap:wrap}
+.sim-pill{padding:5px 11px;border-radius:99px;font-size:12px;background:rgba(5,13,26,.75);border:1px solid currentColor;color:#4fd1a5}
+.sim-pill+.sim-pill{color:#c5d2e3}
+.sim-rad{display:none;color:#ff9a4d!important}
+.sim-rad.on{display:block;animation:simpar .8s infinite}
+@keyframes simpar{50%{opacity:.35}}
+.sim-pan{display:flex;flex-direction:column;gap:10px}
+.sim-c{background:rgba(16,28,48,.72);border:1px solid rgba(124,196,255,.16);border-radius:14px;padding:12px}
+.sim-c h3{margin:0 0 8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#93a6be;font-weight:600}
+.sim-bt{display:flex;flex-wrap:wrap;gap:6px}
+.sim-bt button{font:inherit;font-size:12.5px;color:#e9eff7;background:#142339;border:1px solid #26405f;border-radius:9px;padding:7px 11px;cursor:pointer}
+.sim-bt button:hover{border-color:#7cc4ff}
+.sim-bt button.on{border-color:#7cc4ff;box-shadow:0 0 0 1px #7cc4ff inset;background:#1a2c46}
+.sim-bt button.sal{border-color:#4fd1a5;color:#4fd1a5}
+.sim-sl{display:grid;grid-template-columns:78px 1fr 34px;align-items:center;gap:8px;font-size:12px;color:#c5d2e3;margin:5px 0}
+.sim-sl input{width:100%}
+.sim-sl b{font-weight:600;text-align:right}
+.sim-nota{margin:8px 0 4px;font-size:12px;color:#93a6be}
+#sim-log div{font-size:12px;color:#c5d2e3;padding:3px 0;border-top:1px solid rgba(124,196,255,.1)}
+.sim-m{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:14px}
+.sim-m div{background:rgba(16,28,48,.72);border:1px solid rgba(124,196,255,.16);border-radius:12px;padding:9px 11px}
+.sim-m small{display:block;color:#93a6be;font-size:11px;margin-bottom:2px}
+.sim-m b{font-size:18px;font-weight:600}
+.sim-ia{margin-top:10px;padding:12px 14px;border-radius:12px;background:rgba(16,28,48,.72);border-left:3px solid var(--c,#4fd1a5);font-size:13px;color:#dbe6f4}
+@media(max-width:1100px){.sim-grid{grid-template-columns:1fr}.sim-m{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 </head>
 <body>
 <canvas id="estrellas"></canvas>
 <aside class="lateral">
   <div class="marca"><svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="9" fill="#4fd1a5"/><ellipse cx="24" cy="24" rx="20" ry="8" stroke="#7cc4ff" stroke-width="2" transform="rotate(-25 24 24)"/><circle cx="41" cy="16" r="3" fill="#e9eff7"/></svg><div><b>AstroHealth AI</b><small>Salud espacial</small></div></div>
-  <nav><button class="nav on" data-ir="panel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Panel principal</button><button class="nav" data-ir="ia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3M12 8.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></svg>Análisis IA</button><button class="nav" data-ir="historial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Historial</button></nav>
+  <nav><button class="nav on" data-ir="panel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Panel principal</button><button class="nav" data-ir="ia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3M12 8.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></svg>Análisis IA</button><button class="nav" data-ir="historial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Historial</button><button class="nav" data-ir="simulador"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="11" r="7"/><ellipse cx="12" cy="11" rx="4" ry="3"/><path d="M7 20h10"/></svg>Simulador</button></nav>
   <div class="lat-pie"><div class="fila"><span id="lat-punto"></span><span id="lat-txt">Conectando</span></div><small>NASA Space Apps 2026 · prototipo activo</small></div>
 </aside>
 <div class="wrap">
@@ -206,7 +237,33 @@ h3.seccion.primero{margin-top:8px}
     </table>
   </div>
   </div>
-  <footer>Prototipo del NASA Space Apps Challenge 2026. Las alertas combinan reglas clínicas simples con una comparación contra la línea base de cada astronauta. No sustituye una evaluación médica.<p class="autor">Desarrollador web: ALDAHIR PABLO SILVA VILLAR</p>
+  <div class="vista" id="v-simulador">
+  <div class="sim-top"><h2>Simulador de misión</h2><p>Controla al astronauta y mira cómo reacciona su cuerpo y la IA. Datos simulados: no se guardan en Supabase.</p></div>
+  <div class="sim-grid">
+    <div class="sim-esc"><canvas id="sim-cv"></canvas><div class="sim-hud"><span class="sim-pill" id="sim-estado">Todo en rango</span><span class="sim-pill" id="sim-dia-p">Día 30</span><span class="sim-pill sim-rad" id="sim-rad">☢ Tormenta solar</span></div></div>
+    <div class="sim-pan">
+      <div class="sim-c"><h3>Actividad</h3><div class="sim-bt" id="sim-ba"></div></div>
+      <div class="sim-c"><h3>Evento</h3><div class="sim-bt" id="sim-be"></div></div>
+      <div class="sim-c"><h3>Check-in del astronauta</h3>
+        <div class="sim-sl"><span>Ánimo</span><input type="range" id="sim-an" min="0" max="10" step="1" value="8"><b id="sim-an-v">8</b></div>
+        <div class="sim-sl"><span>Estrés</span><input type="range" id="sim-es" min="0" max="10" step="1" value="3"><b id="sim-es-v">3</b></div>
+        <div class="sim-sl"><span>Sueño (h)</span><input type="range" id="sim-su" min="0" max="12" step="0.5" value="7.5"><b id="sim-su-v">7.5</b></div>
+        <div class="sim-sl"><span>Día misión</span><input type="range" id="sim-dia" min="1" max="180" step="1" value="30"><b id="sim-dia-v">30</b></div>
+      </div>
+      <div class="sim-c"><h3>Enlace con la Tierra</h3>
+        <div class="sim-bt"><button id="sim-link" class="on">Enlace: conectado</button><button id="sim-reset">Reiniciar</button></div>
+        <p class="sim-nota" id="sim-nota"></p><div id="sim-log"></div>
+      </div>
+    </div>
+  </div>
+  <div class="sim-m">
+    <div><small>Pulso</small><b id="sm-bpm">72 lpm</b></div><div><small>Temperatura</small><b id="sm-temp">36.6 °C</b></div><div><small>SpO2</small><b id="sm-spo2">98 %</b></div>
+    <div><small>Dosis radiación</small><b id="sm-rad">0 mSv</b></div><div><small>Densidad ósea*</small><b id="sm-hueso">100 %</b></div><div><small>Defensas*</small><b id="sm-inm">100/100</b></div>
+  </div>
+  <div class="sim-ia" id="sim-ia">Sin alertas.</div>
+  <p class="sim-nota">* Estimaciones del simulador, no son mediciones reales. Atajos: Espacio = saltar.</p>
+</div>
+<footer>Prototipo del NASA Space Apps Challenge 2026. Las alertas combinan reglas clínicas simples con una comparación contra la línea base de cada astronauta. No sustituye una evaluación médica.<p class="autor">Desarrollador web: ALDAHIR PABLO SILVA VILLAR</p>
   </footer>
 </div>
 <script>
@@ -456,7 +513,7 @@ h3.seccion.primero{margin-top:8px}
 }
 document.querySelectorAll('.nav').forEach(function(b){b.addEventListener('click',function(){ir(b.dataset.ir);});});
 var hash0=(location.hash||'').slice(1);
-if(['ia','historial'].indexOf(hash0)>=0)ir(hash0);
+if(['ia','historial','simulador'].indexOf(hash0)>=0)ir(hash0);
 function vistas(filas,nivel){
   var act=filas[filas.length-1];
   var col={normal:'#4fd1a5',atencion:'#f5b642',critico:'#ff6b5b'}[nivel];
@@ -522,6 +579,205 @@ function baseIA(filas){
     box.appendChild(d);
   });
 }
+
+var SIM={on:false,az:.35,drag:false,lx:0,act:0,ev:0,jump:-1,sdose:0,link:true,cola:[],clave:'',tlog:0,ph:0,nivel:'normal',
+  V:{b:72,t:36.6,s:98},P:{f:0,a:0,r:0,l:0,o:0,v:0,w:0},st:{an:8,es:3,su:7.5,day:30,hueso:100,inm:100}};
+var SACT=[
+ {n:'Descansar',f:0,a:0,r:0,l:0,o:0,v:0,b:72,dt:0,ds:0},
+ {n:'Caminar',f:.9,a:.45,r:.35,l:.05,o:.06,v:1.2,b:92,dt:.2,ds:-.5},
+ {n:'Correr',f:1.7,a:.8,r:.8,l:.2,o:.14,v:3,b:138,dt:.6,ds:-2}];
+var SEV=[
+ {n:'Normal',db:0,dt:0,ds:0,l:0,w:0,sl:1},
+ {n:'Fiebre',db:12,dt:2.2,ds:0,l:.28,w:.03,sl:.65},
+ {n:'Despresurización',db:25,dt:0,ds:-12,l:.08,w:.14,sl:1},
+ {n:'Tormenta solar',db:8,dt:0,ds:0,l:.05,w:.03,sl:.9},
+ {n:'Aislamiento',db:0,dt:0,ds:0,l:.18,w:0,sl:.75}];
+var sR,sSc,sCam,sCv,sVis,sLuz,sRim,sSol,sA,sB,sHd,sPL,sPR,sBL,sBR,sCr=[],sRo=[],sWd=0,sHt=0,sPrev=0;
+function simMat(c,r,m){return new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});}
+function simMesh(g,m,q,par){var x=new THREE.Mesh(g,m);x.position.set(q[0],q[1],q[2]);x.castShadow=true;par.add(x);return x;}
+function simPata(sg,blanco,oscuro){var g=new THREE.Group();g.position.set(sg*.27,0,0);sA.add(g);
+  simMesh(new THREE.CylinderGeometry(.2,.17,.95,18),blanco,[0,-.48,0],g);
+  simMesh(new THREE.BoxGeometry(.38,.22,.56),oscuro,[0,-.96,.09],g);return g;}
+function simBrazo(sg,blanco,oscuro){var g=new THREE.Group();g.position.set(sg*.74,1.15,0);sB.add(g);
+  simMesh(new THREE.CylinderGeometry(.17,.14,.85,18),blanco,[0,-.42,0],g);
+  simMesh(new THREE.SphereGeometry(.2,18,18),oscuro,[0,-.9,0],g);return g;}
+function simBuild(){
+  sCv=document.getElementById('sim-cv');
+  sR=new THREE.WebGLRenderer({canvas:sCv,antialias:true});
+  sR.setPixelRatio(Math.min(window.devicePixelRatio||1,2));sR.shadowMap.enabled=true;
+  sSc=new THREE.Scene();sCam=new THREE.PerspectiveCamera(40,1,.1,100);
+  sSc.add(new THREE.AmbientLight(0x8fa6c8,.45));
+  sSol=new THREE.DirectionalLight(0xffffff,1.1);sSol.position.set(4,6,4);sSol.castShadow=true;sSol.shadow.mapSize.set(1024,1024);
+  var c=sSol.shadow.camera;c.left=-5;c.right=5;c.top=5;c.bottom=-5;sSc.add(sSol);
+  sRim=new THREE.PointLight(0x4fd1a5,1,10);sRim.position.set(-2,1.5,2);sSc.add(sRim);
+  var blanco=simMat(0xf1f5fa,.55,.1),gris=simMat(0x9fb2c7,.6,.2),oscuro=simMat(0x4f6076,.6,.25);
+  sA=new THREE.Group();sA.rotation.y=Math.PI/2;sSc.add(sA);sB=new THREE.Group();sA.add(sB);
+  simMesh(new THREE.CylinderGeometry(.55,.5,1.3,28),blanco,[0,.65,0],sB);
+  simMesh(new THREE.BoxGeometry(.85,1.05,.4),gris,[0,.72,-.5],sB);
+  simMesh(new THREE.BoxGeometry(.42,.3,.06),simMat(0x0d1a2b,.4,.5),[0,.9,.52],sB);
+  sLuz=simMesh(new THREE.BoxGeometry(.3,.04,.02),new THREE.MeshBasicMaterial({color:0x4fd1a5}),[0,.9,.56],sB);
+  sHd=new THREE.Group();sHd.position.set(0,1.75,0);sB.add(sHd);
+  simMesh(new THREE.SphereGeometry(.62,36,36),blanco,[0,0,0],sHd);
+  sVis=simMesh(new THREE.SphereGeometry(.5,36,36),new THREE.MeshStandardMaterial({color:0x0d1a2b,roughness:.1,metalness:.9,emissive:0x4fd1a5,emissiveIntensity:.35}),[0,0,.27],sHd);
+  sVis.scale.set(1,.8,.6);
+  sPL=simPata(-1,blanco,oscuro);sPR=simPata(1,blanco,oscuro);sBL=simBrazo(-1,blanco,oscuro);sBR=simBrazo(1,blanco,oscuro);
+  var piso=new THREE.Mesh(new THREE.PlaneGeometry(40,40),simMat(0x2c3647,1,0));piso.rotation.x=-Math.PI/2;piso.position.y=-1.06;piso.receiveShadow=true;sSc.add(piso);
+  for(var i=0;i<16;i++){var r=.35+Math.random()*.7,g=new THREE.Group();
+    var d=new THREE.Mesh(new THREE.CircleGeometry(r,24),new THREE.MeshStandardMaterial({color:0x1d2736,roughness:1}));d.rotation.x=-Math.PI/2;g.add(d);
+    var a=new THREE.Mesh(new THREE.RingGeometry(r,r*1.18,24),new THREE.MeshStandardMaterial({color:0x44506a,roughness:1}));a.rotation.x=-Math.PI/2;g.add(a);
+    g.position.set(-9+Math.random()*18,-1.05,-4+Math.random()*8);if(Math.abs(g.position.z)<.9)g.position.z+=2*(g.position.z<0?-1:1);
+    sSc.add(g);sCr.push(g);}
+  for(var j=0;j<14;j++){var k=new THREE.Mesh(new THREE.DodecahedronGeometry(.1+Math.random()*.15),simMat(0x59647a,1,0));
+    k.position.set(-9+Math.random()*18,-1,-4+Math.random()*8);k.castShadow=true;sSc.add(k);sRo.push(k);}
+  var tierra=new THREE.Mesh(new THREE.SphereGeometry(1.6,32,32),new THREE.MeshBasicMaterial({color:0x2f6fcf}));tierra.position.set(-10,6.5,-16);sSc.add(tierra);
+  var pos=new Float32Array(600);for(var q=0;q<200;q++){pos[q*3]=(Math.random()-.5)*50;pos[q*3+1]=Math.random()*18;pos[q*3+2]=-18-Math.random()*10;}
+  var pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  sSc.add(new THREE.Points(pg,new THREE.PointsMaterial({size:.07,color:0xcfe3ff})));
+}
+
+
+var SREC={hipoxia:'Revisar presión y oxígeno del traje y avisar de inmediato.',spo2:'Reducir el esfuerzo y revisar el flujo de oxígeno.',fiebre:'Aislar, hidratar y volver a medir en 30 minutos.',hipo:'Abrigar y revisar el control térmico del traje.',rad:'Refugiarse en la zona blindada y avisar al control de misión.',radL:'Prepararse para refugio y vigilar la dosis.',taqui:'Reducir el esfuerzo, respirar profundo y vigilar los valores.',brady:'Descansar y repetir la medición.',mental:'Descansar, registrar el ánimo y pedir apoyo en el próximo enlace.',hueso:'Reforzar el ejercicio de resistencia diario.',inm:'Priorizar el sueño y bajar el estrés.'};
+function simEval(b,t,s2,st){
+  var al=[],alto=false;
+  function add(k,x,hi){al.push({k:k,t:x});if(hi)alto=true;}
+  if(s2<90)add('hipoxia','Hipoxia severa (SpO2 '+Math.round(s2)+' %)',1);else if(s2<95)add('spo2','SpO2 baja ('+Math.round(s2)+' %)',0);
+  if(t>=38)add('fiebre','Fiebre ('+t.toFixed(1)+' °C)',1);else if(t<35)add('hipo','Hipotermia ('+t.toFixed(1)+' °C)',1);
+  if(SIM.ev===3){if(SIM.sdose>=20)add('rad','Radiación alta (+'+SIM.sdose.toFixed(0)+' mSv)',1);else add('radL','Tormenta solar en curso',0);}
+  if(b>100)add('taqui','Taquicardia ('+Math.round(b)+' lpm)',0);else if(b<60)add('brady','Bradicardia ('+Math.round(b)+' lpm)',0);
+  if(st.an<=3||st.es>=8||st.su<=4)add('mental','Salud mental en riesgo (ánimo '+st.an+', estrés '+st.es+', sueño '+st.su+' h)',0);
+  if(st.hueso<93)add('hueso','Pérdida ósea estimada ('+(100-st.hueso).toFixed(1)+' %)',0);
+  if(st.inm<75)add('inm','Defensas bajas (estimado)',0);
+  return {al:al,n:alto?'critico':(al.length?'atencion':'normal')};
+}
+function simLeer(){
+  var st=SIM.st,g=function(i){return Number(document.getElementById(i).value);};
+  st.an=g('sim-an');st.es=g('sim-es');st.su=g('sim-su');st.day=g('sim-dia');
+  st.hueso=100-0.05*st.day;
+  st.inm=Math.max(0,Math.min(100,100-0.1*st.day-(st.es-3)*2-(st.su<7?(7-st.su)*2:0)));
+}
+function simDrift(dt){
+  if(SIM.ev!==4)return;
+  var d=function(i,v,mn,mx){var e=document.getElementById(i);e.value=Math.max(mn,Math.min(mx,Number(e.value)+v*dt));};
+  d('sim-an',-.18,0,10);d('sim-es',.18,0,10);d('sim-su',-.12,0,12);
+}
+function simFis(dt){
+  var a=SACT[SIM.act],e=SEV[SIM.ev],st=SIM.st,V=SIM.V;
+  simDrift(dt);simLeer();
+  if(SIM.ev===3)SIM.sdose+=dt*1.2;
+  var tb=a.b+e.db+(st.es-3)*1.8+(st.su<7?(7-st.su)*1.5:0);
+  V.b+=(tb-V.b)*Math.min(1,dt*1.2);
+  V.t+=(36.6+a.dt+e.dt-V.t)*Math.min(1,dt*.6);
+  V.s+=(98+a.ds+e.ds-V.s)*Math.min(1,dt*.8);
+}
+function simAnim(dt,t){
+  var a=SACT[SIM.act],e=SEV[SIM.ev],P=SIM.P,V=SIM.V,st=SIM.st,k=Math.min(1,dt*3);
+  var T={f:a.f*e.sl,a:a.a,r:a.r,l:a.l+e.l+Math.max(0,5-st.an)*.02,o:a.o,v:a.v*e.sl,w:e.w};
+  for(var x in T)P[x]+=(T[x]-P[x])*k;
+  var C={normal:0x4fd1a5,atencion:0xf5b642,critico:0xff6b5b}[SIM.nivel];
+  sVis.material.emissive.setHex(C);sRim.color.setHex(C);sLuz.material.color.setHex(C);
+  SIM.ph+=dt*P.f*6.283;var sn=Math.sin(SIM.ph);
+  var tr=SIM.ev===2?(Math.sin(t*3.1)*.6+Math.sin(t*5.3)*.4):Math.sin(t*1.7);
+  var resp=Math.sin(t*(V.b/60)*3.14)*.012;
+  sPL.rotation.x=sn*P.a;sPR.rotation.x=-sn*P.a;sBL.rotation.x=-sn*P.r;sBR.rotation.x=sn*P.r;sBL.rotation.z=.12;sBR.rotation.z=-.12;
+  sB.rotation.x=P.l+resp;sB.rotation.z=P.w*tr;sHd.rotation.x=P.l*.9;
+  var y=Math.abs(sn)*P.o;
+  if(SIM.jump>=0){SIM.jump+=dt;var u=SIM.jump/1.4;
+    if(u>=1){SIM.jump=-1;}else{var up=Math.sin(Math.PI*u);y+=up*1.1;sBL.rotation.x=-2.4*up;sBR.rotation.x=-2.4*up;sPL.rotation.x=.5*up;sPR.rotation.x=-.3*up;}}
+  sA.position.y=y;
+  var pl=Math.pow(Math.max(0,Math.sin(6.283*V.b/60*t)),4);
+  sVis.material.emissiveIntensity=(SIM.nivel==='critico'&&Math.sin(t*9)>0?1.2:.25)+.7*pl;
+  sRim.intensity=SIM.ev===3?1+Math.random()*1.6:1;
+  sSol.intensity=SIM.ev===3&&Math.sin(t*20)>.7?1.9:1.1;
+  var vel=dt*P.v;
+  sCr.forEach(function(g){g.position.x-=vel;if(g.position.x<-9)g.position.x+=18;});
+  sRo.forEach(function(g){g.position.x-=vel;if(g.position.x<-9)g.position.x+=18;});
+  sCam.position.set(Math.sin(SIM.az)*7.4,1.5,Math.cos(SIM.az)*7.4);sCam.lookAt(0,.2,0);
+}
+function simLoop(now){
+  requestAnimationFrame(simLoop);
+  var dt=Math.min(.05,(now-sPrev)/1000);sPrev=now;
+  if(!document.getElementById('v-simulador').classList.contains('on'))return;
+  var w=sCv.clientWidth,h=sCv.clientHeight;
+  if(w&&(w!==sWd||h!==sHt)){sWd=w;sHt=h;sR.setSize(w,h,false);sCam.aspect=w/h;sCam.updateProjectionMatrix();}
+  simFis(dt);
+  var ev=simEval(SIM.V.b,SIM.V.t,SIM.V.s,SIM.st);SIM.nivel=ev.n;
+  simAnim(dt,now/1000);
+  sR.render(sSc,sCam);
+  simUI(ev);
+}
+
+
+function simG(i){return document.getElementById(i);}
+function simLog(){
+  var h='';
+  SIM.cola.forEach(function(m){h+='<div><span style="color:'+(m.p?'#f5b642':'#4fd1a5')+'">●</span> '+(m.p?'Pendiente de envío · ':'Enviado a la Tierra · ')+m.t+'</div>';});
+  simG('sim-log').innerHTML=h;
+  simG('sim-nota').textContent=SIM.link?'Conectado: la IA analiza a bordo y reporta a la Tierra.':'Sin señal: la IA decide a bordo y los reportes quedan en cola.';
+}
+function simUI(ev){
+  var V=SIM.V,st=SIM.st,col={normal:'#4fd1a5',atencion:'#f5b642',critico:'#ff6b5b'}[ev.n];
+  var es=simG('sim-estado');es.textContent={normal:'Todo en rango',atencion:'Requiere atención',critico:'Estado crítico'}[ev.n];es.style.color=col;
+  simG('sim-dia-p').textContent='Día '+st.day;
+  simG('sim-rad').classList.toggle('on',SIM.ev===3);
+  ['an','es','su','dia'].forEach(function(k){simG('sim-'+k+'-v').textContent=simG('sim-'+k).value;});
+  simG('sm-bpm').textContent=Math.round(V.b)+' lpm';
+  simG('sm-temp').textContent=V.t.toFixed(1)+' °C';
+  simG('sm-spo2').textContent=Math.round(V.s)+' %';
+  simG('sm-rad').textContent=(st.day*.66+SIM.sdose).toFixed(1)+' mSv';
+  simG('sm-hueso').textContent=st.hueso.toFixed(1)+' %';
+  simG('sm-inm').textContent=Math.round(st.inm)+'/100';
+  var box=simG('sim-ia');box.style.setProperty('--c',col);
+  box.textContent=ev.al.length?ev.al.map(function(x){return x.t;}).join(' · ')+'. '+SREC[ev.al[0].k]:'Sin alertas. Mantén la rutina.';
+  var clave=ev.al.map(function(x){return x.k;}).join(',');
+  if(clave!==SIM.clave&&performance.now()-SIM.tlog>800){
+    SIM.clave=clave;SIM.tlog=performance.now();
+    SIM.cola.unshift({t:ev.al.length?ev.al[0].t:'Estado normal',p:!SIM.link});
+    if(SIM.cola.length>5)SIM.cola.pop();
+    simLog();
+  }
+}
+function simMarcar(id,i){simG(id).querySelectorAll('button:not(.sal)').forEach(function(b,k){b.classList.toggle('on',k===i);});}
+function simGrupo(id,lista,fn){
+  var c=simG(id);
+  lista.forEach(function(o,i){var b=document.createElement('button');b.textContent=o.n;
+    b.addEventListener('click',function(){fn(i);simMarcar(id,i);b.blur();});c.appendChild(b);});
+  simMarcar(id,0);
+}
+function simReset(){
+  SIM.act=0;SIM.ev=0;SIM.sdose=0;SIM.jump=-1;SIM.cola=[];SIM.clave='';SIM.link=true;SIM.az=.35;
+  SIM.V.b=72;SIM.V.t=36.6;SIM.V.s=98;
+  [['sim-an',8],['sim-es',3],['sim-su',7.5],['sim-dia',30]].forEach(function(x){simG(x[0]).value=x[1];});
+  simMarcar('sim-ba',0);simMarcar('sim-be',0);
+  var l=simG('sim-link');l.classList.add('on');l.textContent='Enlace: conectado';simLog();
+}
+function simStart(){
+  if(SIM.on)return;
+  if(!window.THREE){simG('sim-ia').textContent='No se pudo cargar Three.js. Revisa tu conexión.';return;}
+  try{simBuild();}catch(e){simG('sim-ia').textContent='Tu navegador no soporta WebGL.';return;}
+  SIM.on=true;sPrev=performance.now();requestAnimationFrame(simLoop);
+}
+function simInit(){
+  simGrupo('sim-ba',SACT,function(i){SIM.act=i;});
+  var bj=document.createElement('button');bj.textContent='Saltar';bj.className='sal';
+  bj.addEventListener('click',function(){if(SIM.jump<0)SIM.jump=0;bj.blur();});simG('sim-ba').appendChild(bj);
+  simGrupo('sim-be',SEV,function(i){SIM.ev=i;});
+  var l=simG('sim-link');
+  l.addEventListener('click',function(){
+    SIM.link=!SIM.link;l.classList.toggle('on',SIM.link);l.textContent=SIM.link?'Enlace: conectado':'Enlace: sin señal';
+    if(SIM.link)SIM.cola.forEach(function(m){m.p=false;});simLog();l.blur();});
+  simG('sim-reset').addEventListener('click',function(){simReset();simG('sim-reset').blur();});
+  var cv=simG('sim-cv');
+  cv.addEventListener('pointerdown',function(e){SIM.drag=true;SIM.lx=e.clientX;});
+  window.addEventListener('pointerup',function(){SIM.drag=false;});
+  window.addEventListener('pointermove',function(e){if(SIM.drag){SIM.az-=(e.clientX-SIM.lx)*.008;SIM.lx=e.clientX;}});
+  document.addEventListener('keydown',function(e){
+    if(e.code==='Space'&&simG('v-simulador').classList.contains('on')&&e.target.tagName!=='INPUT'&&e.target.tagName!=='BUTTON'){e.preventDefault();if(SIM.jump<0)SIM.jump=0;}});
+  document.querySelector('.nav[data-ir="simulador"]').addEventListener('click',function(){setTimeout(simStart,30);});
+  if((location.hash||'')==='#simulador')setTimeout(simStart,300);
+  simLog();
+}
+simInit();
+
 //__NUEVO__
   iniciarEstrellas();
   crearOrbe();
